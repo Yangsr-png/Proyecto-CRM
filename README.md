@@ -2,7 +2,7 @@
 
 ## 1. Resumen y Objetivo del Proyecto
 
-[cite_start]El proyecto consiste en el desarrollo, en grupo, de un **CRM (Customer Relationship Management)** Full Stack que cubra los módulos de clientes, contactos, tareas comerciales y métricas de rendimiento[cite: 5].
+El proyecto consiste en el desarrollo, en grupo, de un **CRM (Customer Relationship Management)** Full Stack que cubra los módulos de clientes, contactos, tareas comerciales y métricas de rendimiento.
 
 | Bloque | Componentes Clave | Propósito |
 | :--- | :--- | :--- |
@@ -28,22 +28,12 @@
 
 El proyecto se gestiona con una metodología ágil en **GitHub Projects**.
 
-### 👥 Equipo y Distribución Equitativa (17 Issues)
-
-La carga se distribuye para que todos obtengan experiencia Full Stack.
-
-| Compañero | Enfoque Inicial | Total Issues |
-| :--- | :--- | :--- |
-| **Jean** | Backend | 5 |
-| **Sergio** | Frontend | 4 |
-| **Grillete** | Backend | 4 |
-| **Javi** | Frontend | 4 |
 
 ### 🔒 Reglas de Ruleset (Definición de 'Terminado')
 
-[cite_start]Las ramas `main` y `develop` están protegidas para forzar el flujo de calidad y la revisión cruzada[cite: 81].
+Las ramas `main` y `develop` están protegidas para forzar el flujo de calidad y la revisión cruzada.
 
-* [cite_start]**PR Requerido:** El código solo puede fusionarse mediante un Pull Request[cite: 71].
+* **PR Requerido:** El código solo puede fusionarse mediante un Pull Request.
 * **Aprobación Cruzada:** Todo PR requiere **1 aprobación de otro compañero** antes de fusionarse.
 * **Integridad del Código:** Las aprobaciones se descartan si hay nuevos *commits*, y todas las conversaciones deben ser resueltas antes de la fusión.
 
