@@ -1,77 +1,57 @@
-📑 Resumen del Proyecto CRM Empresarial
-1. Resumen del Proyecto
-El proyecto consiste en el desarrollo, en grupo, de un CRM (Customer Relationship Management) empresarial Full Stack. Este sistema permitirá a una empresa gestionar su cartera de clientes, contactos, incidencias, tareas comerciales y métricas de rendimiento.
+# 📑 Resumen del Proyecto CRM Empresarial
 
+## 1. Resumen y Objetivo del Proyecto
 
+[cite_start]El proyecto consiste en el desarrollo, en grupo, de un **CRM (Customer Relationship Management)** Full Stack que cubra los módulos de clientes, contactos, tareas comerciales y métricas de rendimiento[cite: 5].
 
-2. Stack Tecnológico
-El sistema se basa en una arquitectura multicapa moderna:
+| Bloque | Componentes Clave | Propósito |
+| :--- | :--- | :--- |
+| **Tecnología Principal** | **Angular 20 / Spring Boot (Java 21)** | [cite_start]Arquitectura multicapa moderna[cite: 6, 7, 8]. |
+| **Objetivo Funcional** | Gestión de Clientes, Tareas, Contactos y Métricas | [cite_start]Cubrir el alcance mínimo definido [cite: 26-33]. |
+| **Hito 1ª Entrega** | **7 Issues Finalizados** | Cubre la Arquitectura, Seguridad, y el 40% del proyecto total. |
 
+---
 
-Frontend: Desarrollado en Angular 20 con diseño responsivo e interfaces dinámicas. Utiliza TypeScript, RxJS.
+## 2. Arquitectura del Sistema y Stack Tecnológico
 
+| Capa | Tecnología | Características Obligatorias |
+| :--- | :--- | :--- |
+| **Frontend** | **Angular 20** (TypeScript, RxJS) | [cite_start]Diseño responsivo e interfaces dinámicas[cite: 7]. [cite_start]Gestión asíncrona con RxJS[cite: 55]. |
+| **Backend** | **Spring Boot (Java 21)** | [cite_start]Arquitectura MVC + REST, Controladores JSON[cite: 46, 47]. |
+| **Concurrencia** | **Java `ExecutorService`** | [cite_start]Aplicación de hilos y procesos para tareas programadas (notificaciones, recordatorios)[cite: 43, 49]. |
+| **Persistencia** | JPA / Hibernate | [cite_start]Modelado de entidades con relaciones 1:N y N:M[cite: 50, 60]. |
+| **Seguridad** | Spring Security / JWT | [cite_start]Sistema de autenticación y autorización[cite: 42, 51]. |
 
+---
 
+## 3. Flujo de Trabajo y Estándares de Calidad
 
+El proyecto se gestiona con una metodología ágil en **GitHub Projects**.
 
-Backend: Implementado en Spring Boot (Java 21), usando controladores REST, servicios y repositorios.
+### 👥 Equipo y Distribución Equitativa (17 Issues)
 
+La carga se distribuye para que todos obtengan experiencia Full Stack.
 
+| Compañero | Enfoque Inicial | Total Issues |
+| :--- | :--- | :--- |
+| **Jean** | Backend | 5 |
+| **Sergio** | Frontend | 4 |
+| **Grillete** | Backend | 4 |
+| **Javi** | Frontend | 4 |
 
-Base de Datos: Elegida por el grupo (MySQL, PostgreSQL, MongoDB, etc.).
+### 🔒 Reglas de Ruleset (Definición de 'Terminado')
 
+[cite_start]Las ramas `main` y `develop` están protegidas para forzar el flujo de calidad y la revisión cruzada[cite: 81].
 
-3. Arquitectura del Sistema
-La arquitectura está claramente dividida:
+* [cite_start]**PR Requerido:** El código solo puede fusionarse mediante un Pull Request[cite: 71].
+* **Aprobación Cruzada:** Todo PR requiere **1 aprobación de otro compañero** antes de fusionarse.
+* **Integridad del Código:** Las aprobaciones se descartan si hay nuevos *commits*, y todas las conversaciones deben ser resueltas antes de la fusión.
 
+---
 
-Backend (Spring Boot): Utiliza la arquitectura MVC + REST. Implementa servicios concurrentes (ExecutorService) para tareas en segundo plano (notificaciones, recordatorios). La persistencia se gestiona con JPA/Hibernate.
+## 4. Alcance Mínimo de Entrega (40%)
 
+La primera entrega requiere la finalización de los siguientes Issues para superar el 40% del proyecto:
 
-
-
-Frontend (Angular 20): Estructura modular. Gestiona estados y asincronía con observables (RxJS) y HttpClient para consumir la API REST.
-
-
-4. Alcance Funcional Mínimo
-El proyecto requiere la implementación de los siguientes módulos obligatorios:
-
-
-Gestión de clientes: CRUD completo (alta, baja, modificación, listado, búsqueda por filtros).
-
-
-Gestión de contactos e incidencias: Relación cliente-contacto-incidencia (1:N) y notificaciones automáticas por cambios de estado.
-
-
-Gestión de tareas comerciales: Creación y asignación de tareas, control de estado, fechas y prioridad.
-
-
-Gestión de usuarios y roles: Sistema de autenticación y autorización (Spring Security / JWT).
-
-
-
-Dashboard y estadísticas: Representación gráfica de métricas clave (clientes activos, incidencias, tareas completadas).
-
-5. Flujo de Trabajo y Control de Versiones
-El equipo de 4 personas utiliza un flujo de trabajo ágil gestionado por GitHub Projects.
-
-
-Flujo de Ramas: Se utiliza el modelo Gitflow simplificado: main (producción) y develop (integración estable).
-
-Feature Branches: Todo el desarrollo se realiza en ramas feature/NUMERO-ISSUE-... creadas a partir de develop.
-
-Asignación: El trabajo se divide en 17 Issues de forma equitativa para que todos adquieran experiencia Full Stack (tocando Frontend y Backend).
-
-6. Estándares de Calidad (Ruleset)
-Para garantizar la integridad del código y la Revisión Cruzada, se implementó un Ruleset estricto en las ramas main y develop:
-
-Pull Request Obligatorio: El código solo puede fusionarse mediante un PR.
-
-Revisión Cruzada Obligatoria: Todo PR requiere 1 aprobación de otro compañero antes de fusionarse.
-
-Control de Historial: Se bloquean los force pushes y se anulan las aprobaciones si se suben nuevos commits, forzando al Revisor a verificar el cambio final.
-
-Resolución de Conversaciones: Todos los comentarios de la revisión deben ser resueltos antes de la fusión.
-
-7. Alcance Mínimo de Entrega (40%)
-Para la primera entrega del proyecto, el equipo debe completar 7 Issues (Issues #1 a #7), lo que cubre más del 40% del proyecto total. Esto asegura la funcionalidad completa de la Arquitectura, Seguridad, Módulo de Clientes y el modelado base de Contactos.
+* **Issues #1 a #6:** Cobertura total de Arquitectura, Seguridad, y el CRUD de Clientes.
+* **Issue #7:** Inicio del modelado de Contactos.
