@@ -72,6 +72,22 @@ Una tarea (Issue) se considera **"Terminada" (DONE)** solo si cumple con los sig
 2.  Se ha abierto un **Pull Request (PR)** para la rama `develop`.
 3.  El PR ha sido revisado y **aprobado por otro compañero** 
 4.  El código ha sido fusionado a la rama `develop` y pasa las pruebas locales.
+
+---
+
+
+#### Alcance Mínimo (40% para la 1ª Entrega)
+La primera entrega obligatoria corresponde a la finalización de los siguientes módulos esenciales (7 Issues, cubriendo más del 40% del proyecto):
+
+Arquitectura y Seguridad (Setup, JWT, Login/AuthGuard).
+
+Módulo Clientes (CRUD Completo).
+
+Inicio del Módulo Contactos (Modelado y CRUD base).
+
+
+
+
 ### 1. Configuración del Backend
 
 1.  Clonar el repositorio:
