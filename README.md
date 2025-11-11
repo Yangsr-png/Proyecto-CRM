@@ -6,8 +6,8 @@ El proyecto consiste en el desarrollo, en grupo, de un **CRM (Customer Relations
 
 | Bloque | Componentes Clave | Propósito |
 | :--- | :--- | :--- |
-| **Tecnología Principal** | **Angular 20 / Spring Boot (Java 21)** | [cite_start]Arquitectura multicapa moderna[cite: 6, 7, 8]. |
-| **Objetivo Funcional** | Gestión de Clientes, Tareas, Contactos y Métricas | [cite_start]Cubrir el alcance mínimo definido [cite: 26-33]. |
+| **Tecnología Principal** | **Angular 20 / Spring Boot (Java 21)** | Arquitectura multicapa moderna. |
+| **Objetivo Funcional** | Gestión de Clientes, Tareas, Contactos y Métricas | Cubrir el alcance mínimo definido. |
 | **Hito 1ª Entrega** | **7 Issues Finalizados** | Cubre la Arquitectura, Seguridad, y el 40% del proyecto total. |
 
 ---
@@ -16,11 +16,11 @@ El proyecto consiste en el desarrollo, en grupo, de un **CRM (Customer Relations
 
 | Capa | Tecnología | Características Obligatorias |
 | :--- | :--- | :--- |
-| **Frontend** | **Angular 20** (TypeScript, RxJS) | [cite_start]Diseño responsivo e interfaces dinámicas[cite: 7]. [cite_start]Gestión asíncrona con RxJS[cite: 55]. |
-| **Backend** | **Spring Boot (Java 21)** | [cite_start]Arquitectura MVC + REST, Controladores JSON[cite: 46, 47]. |
-| **Concurrencia** | **Java `ExecutorService`** | [cite_start]Aplicación de hilos y procesos para tareas programadas (notificaciones, recordatorios)[cite: 43, 49]. |
-| **Persistencia** | JPA / Hibernate | [cite_start]Modelado de entidades con relaciones 1:N y N:M[cite: 50, 60]. |
-| **Seguridad** | Spring Security / JWT | [cite_start]Sistema de autenticación y autorización[cite: 42, 51]. |
+| **Frontend** | **Angular 20** (TypeScript, RxJS) | Diseño responsivo e interfaces dinámicas. Gestión asíncrona con RxJS. |
+| **Backend** | **Spring Boot (Java 21)** | Arquitectura MVC + REST, Controladores JSON. |
+| **Concurrencia** | **Java `ExecutorService`** | Aplicación de hilos y procesos para tareas programadas (notificaciones, recordatorios). |
+| **Persistencia** | JPA / Hibernate | Modelado de entidades con relaciones 1:N y N:M. |
+| **Seguridad** | Spring Security / JWT | Sistema de autenticación y autorización. |
 
 ---
 
