@@ -57,19 +57,21 @@ El sistema debe cubrir los siguientes módulos funcionales, cumpliendo con la de
 
 ---
 
-##  Puesta en Marcha (Instrucciones)
+###  Flujo de Trabajo y Control de Versiones
 
-A continuación, se detalla cómo configurar y ejecutar el proyecto localmente.
+Utilizamos una metodología ágil gestionada por **GitHub Projects** con un modelo de Sprints.
 
-### Prerequisitos
+#### 1. Estándares de Codificación
+* **Convención de Ramas:** Toda nueva funcionalidad o corrección debe ser creada a partir de la rama `develop` bajo el formato: `feature/NUMERO-ISSUE-descripcion` (Ej: `feature/5-crud-clientes`).
+* **Cierre de Tareas:** Los Pull Requests (PRs) deben incluir en su descripción el comando `Closes #NUMERO-ISSUE` para automatizar el cierre.
 
-Asegúrese de tener instalado lo siguiente:
+#### 2. Definición de 'Terminado' (DoD) y Revisión Cruzada
+Una tarea (Issue) se considera **"Terminada" (DONE)** solo si cumple con los siguientes puntos de **Responsabilidad Compartida**:
 
-* **Java 21 SDK** o superior.
-* **Node.js (LTS)** y **npm**.
-* **Angular CLI** (`npm install -g @angular/cli`).
-* [Software de Base de Datos: **MySQL/PostgreSQL/MongoDB**].
-
+1.  El código cumple con todos los criterios de aceptación del Issue.
+2.  Se ha abierto un **Pull Request (PR)** para la rama `develop`.
+3.  El PR ha sido revisado y **aprobado por otro compañero** 
+4.  El código ha sido fusionado a la rama `develop` y pasa las pruebas locales.
 ### 1. Configuración del Backend
 
 1.  Clonar el repositorio:
@@ -81,4 +83,3 @@ Asegúrese de tener instalado lo siguiente:
 3.  Compilar y ejecutar la aplicación Spring Boot:
     ```bash
     ./mvnw spring-boot:run
-    # o si usa Gradle: ./
