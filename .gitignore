@@ -1,0 +1,8 @@
+# Ignorar carpetas de compilación de Java/Maven
+target/
+*.class
+
+# Ignorar configuraciones locales de VS Code
+.vscode/
+.idea/
+*.log
