@@ -1,0 +1,6 @@
+com\dam2\crm\service\ClienteServiceImpl.class
+com\dam2\crm\controller\ClienteController.class
+com\dam2\crm\Main.class
+com\dam2\crm\model\Cliente.class
+com\dam2\crm\repository\ClienteRepository.class
+com\dam2\crm\service\ClienteService.class
