@@ -1,0 +1,12 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.dashboard-content {
+  padding: 2rem;
+}
+
+/* Estilo específico para el icono dentro del botón de la toolbar */
+mat-toolbar button mat-icon {
+  margin-right: 8px;
+}
