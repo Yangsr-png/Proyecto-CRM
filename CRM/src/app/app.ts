@@ -1,11 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { ClientesTableComponent } from './components/clientes-table/clientes-table.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+ imports: [ClientesTableComponent],
   templateUrl: './app.html',
-  standalone: false,
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss'],
 })
-export class App {
-  protected readonly title = signal('CRM');
-}
+export class AppComponent {}
