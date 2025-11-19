@@ -1,0 +1,19 @@
+<nav class="navbar navbar-dark bg-primary px-3">
+  <span class="navbar-brand mb-0 h1">Mi CRM Dashboard</span>
+  
+  <div class="ms-auto">
+    <button class="btn btn-light text-primary d-flex align-items-center gap-2" (click)="logout()">
+      <span class="material-icons">logout</span>
+      Cerrar Sesión
+    </button>
+  </div>
+</nav>
+
+<div class="container p-4">
+  <div class="alert alert-info">
+    <h1 class="display-6">¡Bienvenido al Dashboard!</h1>
+    <p>Esta es tu zona privada. El <strong>AuthGuard</strong> ha funcionado correctamente.</p>
+    <hr>
+    <p class="mb-0">Desde aquí podrás gestionar tus clientes, reportes y más.</p>
+  </div>
+</div>
