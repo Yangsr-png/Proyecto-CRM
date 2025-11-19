@@ -7,9 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+@Data
 @Entity
-@Table(name = "clientes")
-@Data 
+@Table(name = "clientes") 
 public class Cliente {
 
     @Id
@@ -21,4 +21,5 @@ public class Cliente {
     private String direccion;
     private String email;
     private String telefono;
+
 }
