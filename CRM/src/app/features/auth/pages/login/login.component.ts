@@ -11,6 +11,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   hidePassword = true; 
+  errorMessage: string = ''; // Para mostrar errores en el HTML si quieres
 
   constructor(
     private fb: FormBuilder,
@@ -26,19 +27,18 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log('Formulario válido, iniciando sesión...');
-      this.authService.login();
+      this.authService.login(this.loginForm.value).subscribe({
+        next: () => console.log('Login correcto, redirigiendo...'),
+        error: (err) => {
+          console.error('Error login:', err);
+          alert('Credenciales incorrectas o error de servidor');
+        }
+      });
     } else {
-      console.log('Formulario inválido');
       this.loginForm.markAllAsTouched(); 
     }
   }
 
-  get email() {
-    return this.loginForm.get('email');
-  }
-
-  get password() {
-    return this.loginForm.get('password');
-  }
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
 }

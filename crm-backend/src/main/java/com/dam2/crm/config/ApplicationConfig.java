@@ -19,16 +19,13 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    // 1. CÓMO BUSCAR AL USUARIO
-    // Le decimos a Spring: "Cuando necesites un usuario, búscalo en mi base de datos usando findByUsername"
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        // Usamos findByEmail aquí
+        return email -> userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
     }
 
-    // 2. EL PROVEEDOR DE AUTENTICACIÓN
-    // Es el cerebro que comprueba si el usuario existe Y si la contraseña coincide
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -37,15 +34,11 @@ public class ApplicationConfig {
         return authProvider;
     }
 
-    // 3. EL GESTOR DE AUTENTICACIÓN
-    // Es el componente que usaremos en el Controller para hacer el login
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 4. EL ENCRIPTADOR DE CONTRASEÑAS
-    // Usamos BCrypt, que es el estándar de la industria
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
