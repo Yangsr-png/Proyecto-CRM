@@ -28,9 +28,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         User user = User.builder()
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
+                .email(request.getEmail()) // Usamos email
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
         
@@ -42,32 +42,36 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        System.out.println(">>> LOGIN: " + request.getEmail());
+
+        // Autenticamos usando el email como "principal"
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.getToken(user);
 
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
 
-// CLASES DTO (Data Transfer Objects)
+// --- DTOs ACTUALIZADOS ---
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 class RegisterRequest {
-    private String username;
-    private String password;
     private String nombre;
+    private String email;  // Cambiado de username a email
+    private String password;
 }
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 class LoginRequest {
-    private String username;
+    private String email;  // Cambiado de username a email
     private String password;
 }
 

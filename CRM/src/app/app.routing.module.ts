@@ -1,18 +1,35 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './features/auth/pages/login/login.component'; // Asegurar ruta
-import { ClientesTableComponent } from './components/clientes-table/clientes-table.component'; // Asegurar ruta
 import { authGuard } from './core/guards/auth.guard';
+import { ClientesTableComponent } from './components/clientes-table/clientes-table.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, // <--- CAMBIO CLAVE
-  { path: 'login', component: LoginComponent },
+  // 1. Redirección inicial al login correcto
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+
+  // 2. Carga Perezosa (Lazy Loading) del Módulo de Auth
+  // Esto habilita las rutas: /auth/login y /auth/register
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  },
+
+  // 3. Carga Perezosa del Dashboard
+  { 
+    path: 'dashboard', 
+    loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule),
+    canActivate: [authGuard] 
+  },
+
+  // 4. Ruta de Clientes (Protegida)
   { 
     path: 'clientes', 
     component: ClientesTableComponent,
     canActivate: [authGuard] 
   },
-  { path: '**', redirectTo: 'login' }
+
+  // 5. Cualquier ruta desconocida redirige al login correcto
+  { path: '**', redirectTo: 'auth/login' }
 ];
 
 @NgModule({

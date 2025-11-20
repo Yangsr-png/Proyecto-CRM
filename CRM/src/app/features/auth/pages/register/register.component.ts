@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service'; // Importar el servicio real
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,8 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService // Inyectar el servicio
   ) { }
 
   ngOnInit(): void {
@@ -27,14 +29,24 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      console.log('Registrando usuario:', this.registerForm.value);
-
-      this.router.navigate(['/auth/login']);
+      // Llamada al servicio real que conecta con Spring Boot
+      this.authService.register(this.registerForm.value).subscribe({
+        next: () => {
+          console.log('Registro exitoso');
+          // La redirección ya la hace el servicio, pero por seguridad:
+          // this.router.navigate(['/dashboard']); 
+        },
+        error: (err) => {
+          console.error('Error en el registro:', err);
+          alert('Error al registrarse. El usuario podría ya existir.');
+        }
+      });
     } else {
       this.registerForm.markAllAsTouched();
     }
   }
 
+  // Getters para usar en el HTML
   get name() { return this.registerForm.get('name'); }
   get email() { return this.registerForm.get('email'); }
   get password() { return this.registerForm.get('password'); }
