@@ -1,10 +1,15 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { App } from './app/app';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { importProvidersFrom } from '@angular/core';
+import { AppRoutingModule } from './app/app.routing.module'; // Pon el punto
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 
-import { AppComponent } from './app/app';
-
-bootstrapApplication(AppComponent, {
+bootstrapApplication(App, {
   providers: [
-    provideHttpClient()
+    provideHttpClient(withInterceptors([authInterceptor])), // Conecta el interceptor aquí
+    importProvidersFrom(AppRoutingModule),
+    provideAnimations()
   ]
-}).catch(err => console.error(err));
+}).catch((err) => console.error(err));
