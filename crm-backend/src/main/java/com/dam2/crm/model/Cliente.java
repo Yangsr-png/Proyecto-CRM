@@ -1,14 +1,15 @@
 package com.dam2.crm.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.ToString;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
 
-@Data
 @Entity
-@Table(name = "clientes") 
+@Table(name = "clientes")
+@Data 
 public class Cliente {
 
     @Id
@@ -20,10 +21,4 @@ public class Cliente {
     private String direccion;
     private String email;
     private String telefono;
-    private String estado;
-
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore 
-    @ToString.Exclude 
-    private List<Contacto> contactos;
 }
