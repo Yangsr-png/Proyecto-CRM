@@ -1,3 +1,4 @@
+/* --- TUS ESTILOS ORIGINALES DE FILTROS Y TABLA --- */
 .filtros {
   display: flex;
   gap: 1rem;
@@ -10,6 +11,8 @@
   display: flex;
   flex-direction: column;
   font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
 }
 
 button {
@@ -19,24 +22,131 @@ button {
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate; /* Mejor para bordes redondeados */
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 thead {
-  background-color: #f0f0f0;
+  background-color: #f8f9fa;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 0.4rem;
-  text-align: left;
+th {
+  background-color: #e9ecef;
+  color: #495057;
+  font-weight: 700;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #dee2e6;
 }
 
-tr:nth-child(even) {
-  background-color: #fafafa;
+td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
+  color: #212529;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background-color: #f1f3f5; /* Efecto hover suave */
 }
 
 .error {
-  color: red;
+  color: #dc3545;
   margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+
+/* --- ESTILOS DEL MODAL (CORREGIDO Y CENTRADO) --- */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1055;
+  
+  /* ESTO ES LO QUE LO CENTRA */
+  display: flex !important; 
+  align-items: center;
+  justify-content: center;
+  
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro */
+  backdrop-filter: blur(5px); /* Efecto cristal desenfocado */
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* La tarjeta del modal */
+.modal-dialog {
+  width: 100%;
+  max-width: 550px; /* Ancho máximo */
+  margin: 0; /* Sin márgenes externos para que el flex lo centre */
+  pointer-events: auto;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 20px; /* Bordes muy redondeados */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  background: white;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cabecera azul bonita */
+.modal-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 1.25rem;
+}
+
+.btn-close {
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  opacity: 0.8;
+  cursor: pointer;
+  width: 1em;
+  height: 1em;
+  padding: 0.5rem;
+}
+
+.btn-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
 }
