@@ -1,0 +1,59 @@
+<div class="card mt-3 shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">{{ contactoParaEditar ? 'Editar' : 'Nuevo' }} Contacto</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Nombre *</label>
+          <input type="text" class="form-control" formControlName="nombre"
+                 [class.is-invalid]="form.controls.nombre.invalid && form.controls.nombre.touched">
+          @if (form.controls.nombre.hasError('required') && form.controls.nombre.touched) {
+            <div class="invalid-feedback">El nombre es obligatorio.</div>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Apellido *</label>
+          <input type="text" class="form-control" formControlName="apellido"
+                 [class.is-invalid]="form.controls.apellido.invalid && form.controls.apellido.touched">
+          @if (form.controls.apellido.hasError('required') && form.controls.apellido.touched) {
+            <div class="invalid-feedback">El apellido es obligatorio.</div>
+          }
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-control" formControlName="email"
+                 [class.is-invalid]="form.controls.email.invalid && form.controls.email.touched">
+          @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+            <div class="invalid-feedback">Formato de email incorrecto.</div>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Teléfono</label>
+          <input type="tel" class="form-control" formControlName="telefono"
+                 [class.is-invalid]="form.controls.telefono.invalid && form.controls.telefono.touched">
+          @if (form.controls.telefono.hasError('pattern') && form.controls.telefono.touched) {
+            <div class="invalid-feedback">Debe tener 9 dígitos.</div>
+          }
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cargo</label>
+        <input type="text" class="form-control" formControlName="cargo" placeholder="Ej: Gerente">
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid || isSubmitting">
+          {{ isSubmitting ? 'Guardando...' : (contactoParaEditar ? 'Actualizar' : 'Guardar') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

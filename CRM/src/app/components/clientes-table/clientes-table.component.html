@@ -34,7 +34,7 @@
       <th>Dirección</th>
       <th>Email</th>
       <th>Teléfono</th>
-    </tr>
+      <th>Acciones</th> </tr>
   </thead>
   <tbody>
     <tr *ngFor="let c of clientes">
@@ -44,6 +44,11 @@
       <td>{{ c.direccion }}</td>
       <td>{{ c.email }}</td>
       <td>{{ c.telefono }}</td>
+      <td>
+        <button (click)="abrirFormularioContacto(c)" style="background-color: #17a2b8; color: white; border: none;">
+          + Contacto
+        </button>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -51,3 +56,26 @@
 <div *ngIf="!cargando && clientes.length === 0">
   No hay clientes que coincidan con los filtros.
 </div>
+
+@if (clienteSeleccionadoId) {
+  <div class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Añadir Contacto</h5>
+          <button type="button" class="btn-close" (click)="cerrarFormulario()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <app-contacto-form 
+            [clienteId]="clienteSeleccionadoId"
+            (onSave)="onContactoGuardado()"
+            (onCancel)="cerrarFormulario()">
+          </app-contacto-form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}
