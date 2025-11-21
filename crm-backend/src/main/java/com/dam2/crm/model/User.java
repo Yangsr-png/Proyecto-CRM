@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) // <-- OJO: unique email
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) 
 public class User implements UserDetails {
 
     @Id
@@ -28,15 +28,18 @@ public class User implements UserDetails {
     private String nombre;
 
     @Column(nullable = false)
-    private String email; // <-- Antes username
+    private String email; 
 
     @Column(nullable = false)
     private String password;
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    // --- Métodos de Spring Security ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // <-- ¡CLAVE! Spring Security usa "username" internamente, le damos el email
+        return email;
     }
 
     @Override
