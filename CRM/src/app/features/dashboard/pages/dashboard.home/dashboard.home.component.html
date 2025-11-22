@@ -10,10 +10,19 @@
 </nav>
 
 <div class="container p-4">
-  <div class="alert alert-info">
+  <!-- Mensaje de Bienvenida -->
+  <div class="alert alert-info mb-4">
     <h1 class="display-6">¡Bienvenido al Dashboard!</h1>
     <p>Esta es tu zona privada. El <strong>AuthGuard</strong> ha funcionado correctamente.</p>
     <hr>
     <p class="mb-0">Desde aquí podrás gestionar tus clientes, reportes y más.</p>
   </div>
+
+  <!-- AQUI INSERTAMOS LA TABLA -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <app-clientes-table></app-clientes-table>
+    </div>
+  </div>
+  
 </div>
