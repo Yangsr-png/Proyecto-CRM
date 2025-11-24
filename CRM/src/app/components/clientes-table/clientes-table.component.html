@@ -1,5 +1,7 @@
 <h2>Listado de clientes</h2>
 
+<button routerLink="/clientes/nuevo">Nuevo cliente</button>
+
 <div class="filtros">
   <label>
     Nombre:
@@ -44,6 +46,8 @@
       <td>{{ c.direccion }}</td>
       <td>{{ c.email }}</td>
       <td>{{ c.telefono }}</td>
+      <td>
+  <button [routerLink]="['/clientes', c.id, 'editar']">Editar</button></td>
     </tr>
   </tbody>
 </table>
