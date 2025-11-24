@@ -1,0 +1,46 @@
+<h2 *ngIf="!modoEdicion">Nuevo cliente</h2>
+<h2 *ngIf="modoEdicion">Editar cliente</h2>
+
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Nombre *</label>
+    <input type="text" formControlName="nombre" />
+    <div *ngIf="nombre?.invalid && nombre?.touched" class="error">
+      El nombre es obligatorio y no puede superar 100 caracteres.
+    </div>
+  </div>
+
+  <div>
+    <label>CIF *</label>
+    <input type="text" formControlName="cif" />
+    <div *ngIf="cif?.invalid && cif?.touched" class="error">
+      El CIF es obligatorio.
+    </div>
+  </div>
+
+  <div>
+    <label>Dirección</label>
+    <input type="text" formControlName="direccion" />
+  </div>
+
+  <div>
+    <label>Email *</label>
+    <input type="email" formControlName="email" />
+    <div *ngIf="email?.invalid && email?.touched" class="error">
+      Introduce un email válido.
+    </div>
+  </div>
+
+  <div>
+    <label>Teléfono</label>
+    <input type="text" formControlName="telefono" />
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <button type="submit" [disabled]="cargando">
+    {{ modoEdicion ? 'Guardar cambios' : 'Crear cliente' }}
+  </button>
+</form>

@@ -4,15 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
-
-// 1. IMPORTAR EL COMPONENTE DEL FORMULARIO
-import { ContactoFormComponent } from '../contacto-form/contacto-form.component';
+import { ContactoFormComponent } from "../contacto-form/contacto-form.component";
 
 @Component({
   selector: 'app-clientes-table',
   standalone: true,
-  // 2. AÑADIRLO A LOS IMPORTS
-  imports: [CommonModule, FormsModule, ContactoFormComponent], 
+  imports: [CommonModule, FormsModule, ContactoFormComponent],
   templateUrl: './clientes-table.component.html',
   styleUrls: ['./clientes-table.component.css']
 })

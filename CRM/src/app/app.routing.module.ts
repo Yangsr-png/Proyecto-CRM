@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { ClientesTableComponent } from './components/clientes-table/clientes-table.component';
+import { ClienteForm } from './features/dashboard/pages/cliente-form/cliente-form';
+
 
 const routes: Routes = [
   // 1. Redirección inicial al login correcto
@@ -22,11 +24,23 @@ const routes: Routes = [
   },
 
   // 4. Ruta de Clientes (Protegida)
-  { 
-    path: 'clientes', 
-    component: ClientesTableComponent,
-    canActivate: [authGuard] 
-  },
+  // 4. Ruta de Clientes (Protegida)
+{
+  path: 'clientes',
+  component: ClientesTableComponent,
+  canActivate: [authGuard]
+},
+{
+  path: 'clientes/nuevo',
+  component: ClienteForm,
+  canActivate: [authGuard]
+},
+{
+  path: 'clientes/:id/editar',
+  component: ClienteForm,
+  canActivate: [authGuard]
+},
+
 
   // 5. Cualquier ruta desconocida redirige al login correcto
   { path: '**', redirectTo: 'auth/login' }
