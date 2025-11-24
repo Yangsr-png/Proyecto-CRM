@@ -1,31 +1,39 @@
 <h2>Listado de clientes</h2>
 
-<button routerLink="/clientes/nuevo">Nuevo cliente</button>
+<div class="filtros card p-3 mb-4 border-0 shadow-sm bg-white">
+  <div class="d-flex gap-3 align-items-end flex-wrap">
+    <label class="flex-grow-1">
+      Nombre
+      <input
+        type="text"
+        class="form-control mt-1"
+        [(ngModel)]="filtroNombre"
+        (input)="onFiltrar()"
+        placeholder="Buscar por nombre...">
+    </label>
 
-<div class="filtros">
-  <label>
-    Nombre:
-    <input
-      type="text"
-      [(ngModel)]="filtroNombre"
-      (input)="onFiltrar()"
-      placeholder="Buscar por nombre">
-  </label>
+    <label class="flex-grow-1">
+      CIF
+      <input
+        type="text"
+        class="form-control mt-1"
+        [(ngModel)]="filtroCif"
+        (input)="onFiltrar()"
+        placeholder="Buscar por CIF...">
+    </label>
 
-  <label>
-    CIF:
-    <input
-      type="text"
-      [(ngModel)]="filtroCif"
-      (input)="onFiltrar()"
-      placeholder="Buscar por CIF">
-  </label>
-
-  <button (click)="onLimpiarFiltros()">Limpiar filtros</button>
+    <button class="btn btn-outline-secondary" (click)="onLimpiarFiltros()">
+      <i class="bi bi-x-circle"></i> Limpiar
+    </button>
+  </div>
 </div>
 
-<div *ngIf="cargando">Cargando clientes...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<div *ngIf="cargando" class="text-center p-4 text-muted">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p class="mt-2">Cargando datos...</p>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
 <table *ngIf="!cargando && clientes.length > 0">
   <thead>
@@ -46,12 +54,33 @@
       <td>{{ c.direccion }}</td>
       <td>{{ c.email }}</td>
       <td>{{ c.telefono }}</td>
-      <td>
-  <button [routerLink]="['/clientes', c.id, 'editar']">Editar</button></td>
     </tr>
   </tbody>
 </table>
 
-<div *ngIf="!cargando && clientes.length === 0">
-  No hay clientes que coincidan con los filtros.
+<div *ngIf="!cargando && clientes.length === 0" class="alert alert-warning text-center">
+  No se encontraron clientes con esos filtros.
 </div>
+
+@if (clienteSeleccionadoId) {
+  <div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Añadir Contacto</h5>
+          <button type="button" class="btn-close" (click)="cerrarFormulario()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <app-contacto-form 
+            [clienteId]="clienteSeleccionadoId"
+            (onSave)="onContactoGuardado()"
+            (onCancel)="cerrarFormulario()">
+          </app-contacto-form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}

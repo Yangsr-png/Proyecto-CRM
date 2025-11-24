@@ -4,13 +4,11 @@ import { FormsModule } from '@angular/forms';
 
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
-import { RouterModule } from '@angular/router';
-
 
 @Component({
   selector: 'app-clientes-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './clientes-table.component.html',
   styleUrls: ['./clientes-table.component.css']
 })
@@ -23,6 +21,9 @@ export class ClientesTableComponent implements OnInit {
 
   cargando: boolean = false;
   error: string | null = null;
+
+  // 3. VARIABLE PARA CONTROLAR EL MODAL/FORMULARIO
+  clienteSeleccionadoId: number | null = null; 
 
   constructor(private clientesService: ClientesService) {}
 
@@ -65,5 +66,22 @@ export class ClientesTableComponent implements OnInit {
     this.filtroNombre = '';
     this.filtroCif = '';
     this.cargarClientes();
+  }
+
+  // 4. MÉTODOS PARA ABRIR Y CERRAR EL FORMULARIO DE CONTACTO
+  abrirFormularioContacto(cliente: Cliente): void {
+    if (cliente.id) {
+      this.clienteSeleccionadoId = cliente.id;
+    }
+  }
+
+  cerrarFormulario(): void {
+    this.clienteSeleccionadoId = null;
+  }
+
+  onContactoGuardado(): void {
+    alert('¡Contacto añadido correctamente!');
+    this.cerrarFormulario();
+    // Opcional: Recargar clientes si fuera necesario
   }
 }
