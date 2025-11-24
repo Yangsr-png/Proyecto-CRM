@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
+import { ContactoFormComponent } from "../contacto-form/contacto-form.component";
 
 @Component({
   selector: 'app-clientes-table',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ContactoFormComponent],
   templateUrl: './clientes-table.component.html',
   styleUrls: ['./clientes-table.component.css']
 })
