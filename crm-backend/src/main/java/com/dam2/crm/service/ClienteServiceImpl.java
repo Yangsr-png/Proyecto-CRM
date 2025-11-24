@@ -14,61 +14,62 @@ public class ClienteServiceImpl implements ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    // INYECCIÓN DEL SERVICIO DE NOTIFICACIONES (Hilos)
+    @Autowired
+    private NotificacionService notificacionService;
+
     @Override
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
 
-    // --- NUEVA IMPLEMENTACIÓN DE BÚSQUEDA ---
     @Override
     public List<Cliente> buscarClientes(String nombre, String estado) {
-        // Caso 1: Si vienen ambos filtros
         if (nombre != null && !nombre.isEmpty() && estado != null && !estado.isEmpty()) {
             return clienteRepository.findByNombreContainingIgnoreCaseAndEstado(nombre, estado);
-        } 
-        // Caso 2: Si solo viene el nombre
-        else if (nombre != null && !nombre.isEmpty()) {
+        } else if (nombre != null && !nombre.isEmpty()) {
             return clienteRepository.findByNombreContainingIgnoreCase(nombre);
-        } 
-        // Caso 3: Si solo viene el estado
-        else if (estado != null && !estado.isEmpty()) {
+        } else if (estado != null && !estado.isEmpty()) {
             return clienteRepository.findByEstado(estado);
-        } 
-        // Caso 4: Si no viene nada, devolver todos
-        else {
+        } else {
             return clienteRepository.findAll();
         }
     }
-    // -----------------------------------------
 
     @Override
     public Optional<Cliente> findById(Long id) {
         return clienteRepository.findById(id);
     }
 
+    // --- AQUÍ ESTÁ LA LÓGICA ASÍNCRONA ---
     @Override
     public Cliente save(Cliente cliente) {
-        return clienteRepository.save(cliente);
+        // 1. Guardar en BD
+        Cliente clienteGuardado = clienteRepository.save(cliente);
+
+        // 2. Enviar notificación en segundo plano (Hilo separado)
+        if (clienteGuardado.getEmail() != null) {
+            notificacionService.enviarNotificacionBienvenida(
+                clienteGuardado.getEmail(),
+                clienteGuardado.getNombre()
+            );
+        }
+
+        return clienteGuardado;
     }
+    // --------------------------------------
 
     @Override
     public Optional<Cliente> update(Long id, Cliente clienteActualizado) {
-        Optional<Cliente> clienteExistenteOpt = clienteRepository.findById(id);
-
-        if (clienteExistenteOpt.isPresent()) {
-            Cliente clienteExistente = clienteExistenteOpt.get();
-            
+        return clienteRepository.findById(id).map(clienteExistente -> {
             clienteExistente.setNombre(clienteActualizado.getNombre());
             clienteExistente.setCif(clienteActualizado.getCif());
             clienteExistente.setDireccion(clienteActualizado.getDireccion());
             clienteExistente.setEmail(clienteActualizado.getEmail());
             clienteExistente.setTelefono(clienteActualizado.getTelefono());
-            clienteExistente.setEstado(clienteActualizado.getEstado()); // Aseguramos actualizar estado también
-            
-            return Optional.of(clienteRepository.save(clienteExistente));
-        } else {
-            return Optional.empty();
-        }
+            clienteExistente.setEstado(clienteActualizado.getEstado());
+            return clienteRepository.save(clienteExistente);
+        });
     }
 
     @Override
