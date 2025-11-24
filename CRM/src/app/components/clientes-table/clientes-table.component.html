@@ -36,7 +36,7 @@
 <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
 <table *ngIf="!cargando && clientes.length > 0">
-  <thead>
+ <thead>
     <tr>
       <th>ID</th>
       <th>Nombre</th>
@@ -44,9 +44,10 @@
       <th>Dirección</th>
       <th>Email</th>
       <th>Teléfono</th>
+      <th class="text-center">Acciones</th> 
     </tr>
   </thead>
-  <tbody>
+ <tbody>
     <tr *ngFor="let c of clientes">
       <td>{{ c.id }}</td>
       <td>{{ c.nombre }}</td>
@@ -54,6 +55,13 @@
       <td>{{ c.direccion }}</td>
       <td>{{ c.email }}</td>
       <td>{{ c.telefono }}</td>
+
+      <td class="text-center">
+        <button class="btn btn-sm btn-primary" (click)="abrirFormularioContacto(c)">
+          + Contacto
+        </button>
+      </td>
+      
     </tr>
   </tbody>
 </table>
