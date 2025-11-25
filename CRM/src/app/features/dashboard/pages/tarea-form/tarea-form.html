@@ -1,0 +1,45 @@
+<h2 *ngIf="!modoEdicion">Nueva tarea</h2>
+<h2 *ngIf="modoEdicion">Editar tarea</h2>
+
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+
+  <!-- TÍTULO -->
+  <div>
+    <label>Título *</label>
+    <input type="text" formControlName="titulo" />
+    <div *ngIf="titulo?.invalid && titulo?.touched" class="error">
+      El título es obligatorio.
+    </div>
+  </div>
+
+  <!-- DESCRIPCIÓN -->
+  <div>
+    <label>Descripción</label>
+    <textarea formControlName="descripcion" rows="3"></textarea>
+  </div>
+
+  <!-- FECHA -->
+  <div>
+    <label>Fecha de vencimiento</label>
+    <input type="date" formControlName="fechaVencimiento" />
+  </div>
+
+  <!-- ESTADO -->
+  <div>
+    <label>Estado *</label>
+    <select formControlName="estado">
+      <option *ngFor="let e of estados" [value]="e.value">
+        {{ e.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- ERROR GENERAL -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <button type="submit">
+    {{ modoEdicion ? 'Guardar cambios' : 'Crear tarea' }}
+  </button>
+</form>
