@@ -1,34 +1,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component'; // Importar
 import { ClientesTableComponent } from './components/clientes-table/clientes-table.component';
 
 const routes: Routes = [
-  // 1. Redirección inicial al login correcto
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-
-  // 2. Carga Perezosa (Lazy Loading) del Módulo de Auth
-  // Esto habilita las rutas: /auth/login y /auth/register
   {
     path: 'auth',
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
   },
-
-  // 3. Carga Perezosa del Dashboard
-  { 
-    path: 'dashboard', 
-    loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule),
-    canActivate: [authGuard] 
+  // RUTA DEL LAYOUT (Protegida por AuthGuard)
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+      },
+      { 
+        path: 'clientes', 
+        component: ClientesTableComponent
+      }
+      // Aquí añadirás más rutas (usuarios, tareas, etc.)
+    ]
   },
-
-  // 4. Ruta de Clientes (Protegida)
-  { 
-    path: 'clientes', 
-    component: ClientesTableComponent,
-    canActivate: [authGuard] 
-  },
-
-  // 5. Cualquier ruta desconocida redirige al login correcto
   { path: '**', redirectTo: 'auth/login' }
 ];
 

@@ -1,72 +1,101 @@
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="card shadow-sm register-card">
-    <div class="card-header bg-white pt-4 pb-2 border-0 text-center">
-      <h3 class="card-title">Crear Cuenta</h3>
+<div class="flex min-h-screen items-center justify-center bg-slate-100 p-4">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+    
+    <div class="bg-white pt-8 pb-6 text-center border-b border-slate-100">
+      <h3 class="text-2xl font-bold text-slate-800">Crear Cuenta</h3>
+      <p class="text-slate-500 text-sm mt-1">Únete a la plataforma CRM</p>
     </div>
 
-    <div class="card-body p-4">
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="p-8">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
         
-        <div class="mb-3">
-          <label class="form-label">Nombre Completo</label>
-          <div class="input-group">
-            <input class="form-control" formControlName="name"
-                   [class.is-invalid]="name?.invalid && (name?.dirty || name?.touched)">
-            <span class="input-group-text bg-white">
-              <span class="material-icons">person</span>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre Completo</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <span class="material-icons text-lg">person</span>
             </span>
-            <div class="invalid-feedback" *ngIf="name?.hasError('required')">
-              Tu nombre es obligatorio.
-            </div>
+            <input 
+              formControlName="name" 
+              type="text" 
+              class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-slate-400 text-slate-700"
+              [class.border-red-500]="name?.invalid && (name?.dirty || name?.touched)"
+              placeholder="Ej: Juan Pérez"
+            >
           </div>
+          @if (name?.hasError('required') && (name?.dirty || name?.touched)) {
+            <p class="text-red-500 text-xs mt-1 ml-1">Tu nombre es obligatorio.</p>
+          }
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Correo Electrónico</label>
-          <div class="input-group">
-            <input class="form-control" formControlName="email" type="email"
-                   [class.is-invalid]="email?.invalid && (email?.dirty || email?.touched)">
-            <span class="input-group-text bg-white">
-              <span class="material-icons">email</span>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <span class="material-icons text-lg">email</span>
             </span>
-            <div class="invalid-feedback" *ngIf="email?.hasError('required')">
-              El correo es obligatorio.
-            </div>
-            <div class="invalid-feedback" *ngIf="email?.hasError('email')">
-              Formato de correo inválido.
-            </div>
+            <input 
+              formControlName="email" 
+              type="email" 
+              class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-slate-400 text-slate-700"
+              [class.border-red-500]="email?.invalid && (email?.dirty || email?.touched)"
+              placeholder="tu@correo.com"
+            >
           </div>
+          @if (email?.hasError('required') && (email?.dirty || email?.touched)) {
+            <p class="text-red-500 text-xs mt-1 ml-1">El correo es obligatorio.</p>
+          }
+          @if (email?.hasError('email') && (email?.dirty || email?.touched)) {
+            <p class="text-red-500 text-xs mt-1 ml-1">Formato inválido.</p>
+          }
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <div class="input-group">
-            <input class="form-control" [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-                   [class.is-invalid]="password?.invalid && (password?.dirty || password?.touched)">
-            <button class="btn btn-outline-secondary" type="button" (click)="hidePassword = !hidePassword">
-              <span class="material-icons align-middle fs-5">
-                {{hidePassword ? 'visibility_off' : 'visibility'}}
-              </span>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <span class="material-icons text-lg">lock</span>
+            </span>
+            <input 
+              [type]="hidePassword ? 'password' : 'text'" 
+              formControlName="password"
+              class="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700"
+              [class.border-red-500]="password?.invalid && (password?.dirty || password?.touched)"
+              placeholder="••••••••"
+            >
+            <button 
+              type="button" 
+              (click)="hidePassword = !hidePassword" 
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-blue-600 transition-colors"
+            >
+              <span class="material-icons text-xl">{{hidePassword ? 'visibility_off' : 'visibility'}}</span>
             </button>
-            <div class="invalid-feedback" *ngIf="password?.hasError('required')">
-              La contraseña es obligatoria.
-            </div>
-            <div class="invalid-feedback" *ngIf="password?.hasError('minlength')">
-              Debe tener al menos 6 caracteres.
-            </div>
           </div>
+          @if (password?.hasError('required') && (password?.dirty || password?.touched)) {
+            <p class="text-red-500 text-xs mt-1 ml-1">La contraseña es obligatoria.</p>
+          }
+          @if (password?.hasError('minlength') && (password?.dirty || password?.touched)) {
+            <p class="text-red-500 text-xs mt-1 ml-1">Mínimo 6 caracteres.</p>
+          }
         </div>
 
-        <div class="d-grid gap-2 mt-4">
-          <button class="btn btn-primary" type="submit" [disabled]="registerForm.invalid">
-            Registrarme
-          </button>
-        </div>
+        <button 
+          type="submit" 
+          [disabled]="registerForm.invalid"
+          class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 rounded-lg transition-all transform hover:-translate-y-0.5 shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+        >
+          Registrarme
+        </button>
       </form>
     </div>
     
-    <div class="card-footer bg-white border-0 text-center pb-4">
-      <a routerLink="/auth/login" class="text-decoration-none">¿Ya tienes cuenta? Inicia sesión</a>
+    <div class="bg-slate-50 text-center py-5 border-t border-slate-100">
+      <p class="text-sm text-slate-600">
+        ¿Ya tienes cuenta? 
+        <a routerLink="/auth/login" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline cursor-pointer transition-colors">
+          Inicia sesión
+        </a>
+      </p>
     </div>
   </div>
 </div>

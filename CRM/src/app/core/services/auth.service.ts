@@ -1,7 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, tap, Observable } from 'rxjs';
+import { tap, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface AuthResponse { token: string; }
 
@@ -9,41 +10,38 @@ interface AuthResponse { token: string; }
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:8080/api/auth';
+  // Usa la URL del environment
+  private apiUrl = `${environment.apiUrl}/auth`;
 
-  private isLoggedIn$ = new BehaviorSubject<boolean>(!!localStorage.getItem('token'));
-  public isAuthenticated$ = this.isLoggedIn$.asObservable();
+  // --- SIGNAL DE ESTADO (Privado) ---
+  // Inicializa leyendo del localStorage
+  private _token = signal<string | null>(localStorage.getItem('token'));
 
-  public get isLoggedIn(): boolean {
-    return this.isLoggedIn$.getValue();
-  }
+  // --- SIGNAL COMPUTADO (Público) ---
+  // Se actualiza automáticamente cuando _token cambia
+  public isLoggedIn = computed(() => !!this._token());
 
-  // --- LOGIN REAL (Actualizado a Email) ---
   login(credentials: any): Observable<AuthResponse> {
-    // Como tu formulario ya tiene los campos 'email' y 'password',
-    // y el Backend ahora espera exactamente eso, podemos enviarlo directo.
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         localStorage.setItem('token', response.token);
-        this.isLoggedIn$.next(true);
+        this._token.set(response.token); // Actualizamos el signal
         this.router.navigate(['/dashboard']);
       })
     );
   }
 
-  // --- REGISTRO REAL (Actualizado a Email) ---
   register(userData: any): Observable<AuthResponse> {
-    // Mapeamos los datos para que coincidan con el DTO de Java
+    // Mapeo de datos para el backend
     const requestBody = {
-      nombre: userData.name,     // Frontend: 'name' -> Backend: 'nombre'
-      email: userData.email,     // Frontend: 'email' -> Backend: 'email' (CORREGIDO)
+      nombre: userData.name,
+      email: userData.email,
       password: userData.password
     };
-
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, requestBody).pipe(
       tap(response => {
         localStorage.setItem('token', response.token);
-        this.isLoggedIn$.next(true);
+        this._token.set(response.token);
         this.router.navigate(['/dashboard']);
       })
     );
@@ -51,7 +49,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
-    this.isLoggedIn$.next(false);
+    this._token.set(null); // Limpiamos el signal
     this.router.navigate(['/auth/login']);
   }
 }
