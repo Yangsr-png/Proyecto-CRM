@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, Input, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
@@ -8,13 +8,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-cliente-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './cliente-form.component.html',
-  styleUrls: ['./cliente-form.component.css']
+  templateUrl: './cliente-form.component.html'
 })
-export class ClienteFormComponent {
+export class ClienteFormComponent implements OnChanges {
   private fb = inject(FormBuilder);
   private clientesService = inject(ClientesService);
 
+  @Input() clienteParaEditar: Cliente | null = null; // <--- NUEVO INPUT
   @Output() onSave = new EventEmitter<Cliente>();
   @Output() onCancel = new EventEmitter<void>();
 
@@ -22,11 +22,26 @@ export class ClienteFormComponent {
 
   form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.minLength(3)]],
-    cif: ['', [Validators.required, Validators.pattern(/^[A-Z0-9]{9}$/)]], // Ejemplo validación CIF
+    cif: ['', [Validators.required]],
     direccion: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{9}$/)]]
+    telefono: ['', [Validators.required]],
+    estado: ['ACTIVO'] // Campo estado añadido
   });
+
+  // Detectar cambios si nos pasan un cliente para editar
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['clienteParaEditar'] && this.clienteParaEditar) {
+      this.form.patchValue({
+        nombre: this.clienteParaEditar.nombre,
+        cif: this.clienteParaEditar.cif,
+        direccion: this.clienteParaEditar.direccion,
+        email: this.clienteParaEditar.email,
+        telefono: this.clienteParaEditar.telefono,
+        estado: this.clienteParaEditar.estado || 'ACTIVO'
+      });
+    }
+  }
 
   guardar(): void {
     if (this.form.invalid) {
@@ -35,21 +50,27 @@ export class ClienteFormComponent {
     }
 
     this.isSubmitting = true;
-    const nuevoCliente = this.form.getRawValue() as Cliente;
+    const datosForm = this.form.getRawValue() as Cliente;
 
-    // Aquí asumimos creación (POST). Si quisieras edición, recibirías un @Input clienteId.
-    this.clientesService.crearCliente(nuevoCliente).subscribe({
-      next: (clienteCreado) => {
+    let peticion$;
+    if (this.clienteParaEditar && this.clienteParaEditar.id) {
+      // MODO EDICIÓN
+      peticion$ = this.clientesService.actualizarCliente(this.clienteParaEditar.id, datosForm);
+    } else {
+      // MODO CREACIÓN
+      peticion$ = this.clientesService.crearCliente(datosForm);
+    }
+
+    peticion$.subscribe({
+      next: (clienteGuardado) => {
         this.isSubmitting = false;
-        this.onSave.emit(clienteCreado);
+        this.onSave.emit(clienteGuardado);
         this.form.reset();
       },
       error: (err) => {
         console.error(err);
         this.isSubmitting = false;
-        // El interceptor ya manejará el alert o log global, 
-        // pero aquí puedes mostrar un mensaje específico en el formulario si quieres.
-        alert('Error al crear el cliente');
+        alert('Error al guardar.');
       }
     });
   }

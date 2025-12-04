@@ -1,8 +1,14 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// Servicios y Modelos
 import { ClientesService } from '../../services/clientes.service';
+import { ContactosService } from '../../services/contactos.service';
 import { Cliente } from '../../models/cliente.model';
+import { Contacto } from '../../models/contacto.model';
+
+// Componentes (Modales)
 import { ContactoFormComponent } from '../contacto-form/contacto-form.component';
 import { ClienteFormComponent } from '../cliente-form/cliente-form.component';
 
@@ -14,9 +20,11 @@ import { ClienteFormComponent } from '../cliente-form/cliente-form.component';
   styleUrls: ['./clientes-table.component.css']
 })
 export class ClientesTableComponent implements OnInit {
+  
   private clientesService = inject(ClientesService);
+  private contactosService = inject(ContactosService);
 
-  // --- SIGNALS (Estado) ---
+  // --- ESTADO PRINCIPAL (Signals) ---
   clientes = signal<Cliente[]>([]);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -25,19 +33,28 @@ export class ClientesTableComponent implements OnInit {
   filtroNombre = signal<string>('');
   filtroEstado = signal<string>('');
 
-  // Estado de Modales
-  modalClienteAbierto = signal<boolean>(false);
-  modalContactoAbierto = signal<boolean>(false);
+  // --- ESTADO DE MODALES ---
+  modalClienteAbierto = signal<boolean>(false);        
+  modalContactoAbierto = signal<boolean>(false);       
+  modalListaContactosAbierto = signal<boolean>(false); 
+
+  // Datos temporales para los modales
+  clienteSeleccionadoId: number | null = null; 
+  contactosDelCliente = signal<Contacto[]>([]); 
+  clienteVisualizado: string = '';
   
-  // ID del cliente al que vamos a añadir un contacto
-  clienteSeleccionadoId: number | null = null;
+  // Variable para edición
+  clienteAEditar: Cliente | null = null; 
 
   ngOnInit(): void {
     this.cargarClientes();
   }
 
+  // --- CARGA DE DATOS ---
   cargarClientes(): void {
     this.loading.set(true);
+    this.error.set(null);
+
     const filtros = {
       nombre: this.filtroNombre(),
       estado: this.filtroEstado()
@@ -50,7 +67,7 @@ export class ClientesTableComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.error.set('Error al cargar clientes');
+        this.error.set('Error al conectar con el servidor.');
         this.loading.set(false);
       }
     });
@@ -66,17 +83,48 @@ export class ClientesTableComponent implements OnInit {
     this.cargarClientes();
   }
 
-  // --- MODAL NUEVO CLIENTE ---
-  abrirModalCliente() { this.modalClienteAbierto.set(true); }
-  cerrarModalCliente() { this.modalClienteAbierto.set(false); }
+  // --- LÓGICA MODAL: CLIENTE (CREAR / EDITAR) ---
+  abrirModalCliente() { 
+    this.clienteAEditar = null; // Modo creación
+    this.modalClienteAbierto.set(true); 
+  }
+
+  abrirModalEditar(cliente: Cliente) {
+    this.clienteAEditar = cliente; // Modo edición
+    this.modalClienteAbierto.set(true);
+  }
+  
+  cerrarModalCliente() { 
+    this.modalClienteAbierto.set(false);
+    this.clienteAEditar = null; // Limpiar selección
+  }
   
   onClienteGuardado(cliente: Cliente) {
     this.cerrarModalCliente();
-    this.cargarClientes();
-    alert(`Cliente "${cliente.nombre}" creado con éxito.`);
+    this.cargarClientes(); 
+    const accion = this.clienteAEditar ? 'actualizado' : 'creado';
+    alert(`Cliente "${cliente.nombre}" ${accion} correctamente.`);
   }
 
-  // --- MODAL NUEVO CONTACTO (Lo que faltaba) ---
+  // --- LÓGICA DE BORRADO ---
+  borrarCliente(cliente: Cliente) {
+    if (confirm(`¿Estás seguro de que deseas eliminar a ${cliente.nombre}? Esta acción no se puede deshacer.`)) {
+      if (cliente.id) {
+        this.clientesService.eliminarCliente(cliente.id).subscribe({
+          next: () => {
+            alert('Cliente eliminado correctamente.');
+            this.cargarClientes();
+          },
+          error: (err) => {
+            console.error(err);
+            alert('Error al eliminar el cliente.');
+          }
+        });
+      }
+    }
+  }
+
+  // --- LÓGICA MODAL: AÑADIR CONTACTO ---
   abrirModalContacto(cliente: Cliente) {
     if (cliente.id) {
       this.clienteSeleccionadoId = cliente.id;
@@ -89,8 +137,26 @@ export class ClientesTableComponent implements OnInit {
     this.modalContactoAbierto.set(false);
   }
 
-  onContactoGuardado() {
+  onContactoGuardado(contacto: Contacto) {
     this.cerrarModalContacto();
     alert('Contacto añadido correctamente.');
+  }
+
+  // --- LÓGICA MODAL: VER LISTA DE CONTACTOS ---
+  abrirModalListaContactos(cliente: Cliente) {
+    if (!cliente.id) return;
+
+    this.clienteVisualizado = cliente.nombre;
+    this.modalListaContactosAbierto.set(true);
+    
+    this.contactosService.getByCliente(cliente.id).subscribe({
+      next: (data) => this.contactosDelCliente.set(data),
+      error: (err) => console.error('Error cargando contactos', err)
+    });
+  }
+
+  cerrarModalListaContactos() {
+    this.modalListaContactosAbierto.set(false);
+    this.contactosDelCliente.set([]); 
   }
 }
