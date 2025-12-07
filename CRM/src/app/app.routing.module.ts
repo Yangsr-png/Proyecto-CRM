@@ -7,7 +7,6 @@ import { ClienteForm } from './features/dashboard/pages/cliente-form/cliente-for
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
