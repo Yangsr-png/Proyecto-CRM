@@ -8,14 +8,14 @@ import { Contacto } from '../../models/contacto.model';
   standalone: true,
   imports: [ReactiveFormsModule], // Importamos esto para usar formularios
   templateUrl: './contacto-form.component.html',
-  styleUrls: ['./contacto-form.component.scss'] // Si usas .css cambia esto a .css
+  styleUrls: ['./contacto-form.component.css'] // Si usas .css cambia esto a .css
 })
 export class ContactoFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private contactosService = inject(ContactosService);
 
   // INPUT: Necesitamos saber a qué cliente pertenece este contacto
-  @Input({ required: true }) clienteId!: number;
+  @Input({ required: true }) clienteId!: number ;
 
   // INPUT: (Opcional) Si pasamos un contacto, es para editarlo
   @Input() contactoParaEditar?: Contacto;

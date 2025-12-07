@@ -3,18 +3,16 @@ package com.dam2.crm.repository;
 import com.dam2.crm.model.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    // ↓↓↓ AÑADIR ESTO, SIN BORRAR NADA ↓↓↓
+    List<Cliente> findByNombreContainingIgnoreCase(String nombre);
 
-    // Buscar clientes cuyo nombre contenga un texto (ignorando mayúsculas/minúsculas)
-    java.util.List<Cliente> findByNombreContainingIgnoreCase(String nombre);
+    List<Cliente> findByEstado(String estado);
 
-    // Buscar clientes por estado exacto (ACTIVO, INACTIVO, etc.)
-    java.util.List<Cliente> findByEstado(String estado);
+    List<Cliente> findByNombreContainingIgnoreCaseAndEstado(String nombre, String estado);
 
-    // Buscar por nombre + estado al mismo tiempo
-    java.util.List<Cliente> findByNombreContainingIgnoreCaseAndEstado(String nombre, String estado);
+    long countByEstado(String estado);
 }

@@ -29,10 +29,11 @@ public class JwtService {
     private String getToken(Map<String, Object> extraClaims, UserDetails user) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getUsername()) // El "dueño" del token
-                .setIssuedAt(new Date(System.currentTimeMillis())) // Cuándo se creó
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // Expira en 24 horas
-                .signWith(getKey(), SignatureAlgorithm.HS256) // Firmar con la clave
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                // CORRECCIÓN: 1000 ms * 60 s * 60 min * 24 h
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) 
+                .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 

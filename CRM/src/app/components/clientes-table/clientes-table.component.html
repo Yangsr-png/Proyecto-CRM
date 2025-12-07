@@ -1,93 +1,246 @@
-<h2 class="mb-4 fw-light">Listado de Clientes</h2>
-
-<div class="filtros card p-3 mb-4 border-0 shadow-sm bg-white">
-  <div class="d-flex gap-3 align-items-end flex-wrap">
-    <label class="flex-grow-1">
-      Nombre
-      <input
-        type="text"
-        class="form-control mt-1"
-        [(ngModel)]="filtroNombre"
-        (input)="onFiltrar()"
-        placeholder="Buscar por nombre...">
-    </label>
-
-    <label class="flex-grow-1">
-      CIF
-      <input
-        type="text"
-        class="form-control mt-1"
-        [(ngModel)]="filtroCif"
-        (input)="onFiltrar()"
-        placeholder="Buscar por CIF...">
-    </label>
-
-    <button class="btn btn-outline-secondary" (click)="onLimpiarFiltros()">
-      <i class="bi bi-x-circle"></i> Limpiar
+<div class="space-y-6">
+  
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+    <div>
+      <h2 class="text-2xl font-bold text-slate-800">Cartera de Clientes</h2>
+      <p class="text-slate-500 text-sm mt-1">Gestión integral de empresas y facturación.</p>
+    </div>
+    
+    <button (click)="abrirModalCliente()" 
+            class="bg-[#1e293b] hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 transition-all">
+      <span class="material-icons text-sm">add_business</span> 
+      Nuevo Cliente
     </button>
   </div>
-</div>
 
-<div *ngIf="cargando" class="text-center p-4 text-muted">
-  <div class="spinner-border text-primary" role="status"></div>
-  <p class="mt-2">Cargando datos...</p>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-
-<div class="table-responsive" *ngIf="!cargando && clientes.length > 0">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>CIF</th>
-        <th>Dirección</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th class="text-center">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let c of clientes">
-        <td><span class="badge bg-light text-dark border">{{ c.id }}</span></td>
-        <td class="fw-bold">{{ c.nombre }}</td>
-        <td>{{ c.cif }}</td>
-        <td class="text-muted small">{{ c.direccion }}</td>
-        <td><a href="mailto:{{ c.email }}" class="text-decoration-none">{{ c.email }}</a></td>
-        <td>{{ c.telefono }}</td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-primary shadow-sm px-3" (click)="abrirFormularioContacto(c)">
-            + Contacto
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div *ngIf="!cargando && clientes.length === 0" class="alert alert-warning text-center">
-  No se encontraron clientes con esos filtros.
-</div>
-
-@if (clienteSeleccionadoId) {
-  <div class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title">Añadir Contacto</h5>
-          <button type="button" class="btn-close" (click)="cerrarFormulario()"></button>
+  <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+      <div class="md:col-span-5">
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Buscar Empresa</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+            <span class="material-icons text-lg">search</span>
+          </span>
+          <input type="text" [ngModel]="filtroNombre()" (ngModelChange)="filtroNombre.set($event); onFiltrar()"
+            placeholder="Nombre, CIF..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
         </div>
+      </div>
+      <div class="md:col-span-5">
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Estado</label>
+        <select [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event); onFiltrar()"
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm cursor-pointer">
+           <option value="">Todos</option>     
+           <option value="ACTIVO">Activo</option>
+           <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <button (click)="onLimpiarFiltros()" class="w-full py-2.5 px-4 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-100 font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+          <span class="material-icons text-lg">cleaning_services</span> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+            <th class="py-4 px-6">Empresa / Dirección</th>
+            <th class="py-4 px-6">Identificación</th>
+            <th class="py-4 px-6">Contacto</th>
+            <th class="py-4 px-6 text-center">Estado</th>
+            <th class="py-4 px-6 text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          @for (c of clientes(); track c.id) {
+            <tr class="hover:bg-slate-50/80 transition-colors group">
+              
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm border border-blue-100">
+                    {{ c.nombre.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="font-bold text-slate-800">{{ c.nombre }}</div>
+                    <div class="text-xs text-slate-400 flex items-center gap-1">
+                      <span class="material-icons text-[10px]">place</span> {{ c.direccion }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="py-4 px-6">
+                 <span class="font-mono text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded border border-slate-200">{{ c.cif }}</span>
+              </td>
+
+              <td class="py-4 px-6">
+                <div class="flex flex-col">
+                  <span class="text-slate-700 text-sm font-medium">{{ c.email }}</span>
+                  <span class="text-slate-400 text-xs">{{ c.telefono }}</span>
+                </div>
+              </td>
+
+              <td class="py-4 px-6 text-center">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold border shadow-sm"
+                      [ngClass]="getEstadoClass(c.estado)">
+                  {{ c.estado || 'ACTIVO' }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6 text-center">
+                <div class="flex items-center justify-center gap-1">
+                  <button (click)="abrirModalListaContactos(c)" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Ver Contactos">
+                    <span class="material-icons text-xl">group</span>
+                  </button>
+                  <button (click)="abrirModalContacto(c)" class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors" title="Añadir Contacto">
+                    <span class="material-icons text-xl">person_add</span>
+                  </button>
+                  <button (click)="abrirModalCliente(c)" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Editar">
+                    <span class="material-icons text-xl">edit</span>
+                  </button>
+                  <button (click)="borrarCliente(c)" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Eliminar">
+                    <span class="material-icons text-xl">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (clientes().length === 0 && !loading()) {
+        <div class="p-10 text-center text-slate-400">
+          <span class="material-icons text-5xl mb-2 text-slate-200">search_off</span>
+          <p>No se encontraron clientes.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>
+
+@if (modalClienteAbierto()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all" (click)="cerrarModalCliente()">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-100" (click)="$event.stopPropagation()">
+      
+      <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+        <h3 class="text-xl font-bold text-slate-800">
+          {{ esEdicion() ? 'Editar Cliente' : 'Nuevo Cliente' }}
+        </h3>
+        <button (click)="cerrarModalCliente()" class="text-slate-400 hover:text-red-500 transition-colors">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
         
-        <div class="modal-body">
-          <app-contacto-form 
-            [clienteId]="clienteSeleccionadoId"
-            (onSave)="onContactoGuardado()"
-            (onCancel)="cerrarFormulario()">
-          </app-contacto-form>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre Empresa *</label>
+            <input [(ngModel)]="nuevoCliente.nombre" type="text" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">CIF *</label>
+            <input [(ngModel)]="nuevoCliente.cif" type="text" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
         </div>
 
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Dirección</label>
+          <div class="relative">
+             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <span class="material-icons text-lg">place</span>
+             </span>
+             <input [(ngModel)]="nuevoCliente.direccion" type="text" 
+                    class="w-full pl-10 bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+            <input [(ngModel)]="nuevoCliente.email" type="email" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Teléfono</label>
+            <input [(ngModel)]="nuevoCliente.telefono" type="text" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estado</label>
+          <select [(ngModel)]="nuevoCliente.estado" 
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer">
+            <option value="ACTIVO">Activo</option>
+            <option value="INACTIVO">Inactivo</option>
+            <option value="POTENCIAL">Potencial</option>
+          </select>
+        </div>
+
+        <button (click)="guardar()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-200 mt-4">
+          {{ esEdicion() ? 'Guardar Cambios' : 'Crear Cliente' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (modalContactoAbierto()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" (click)="cerrarModalContacto()">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+        <h3 class="text-lg font-bold text-slate-800">Nuevo Contacto</h3>
+        <button (click)="cerrarModalContacto()" class="text-slate-400 hover:text-slate-600"><span class="material-icons">close</span></button>
+      </div>
+      <div class="p-0">
+        <app-contacto-form [clienteId]="clienteSeleccionadoId!" (onSave)="onContactoGuardado($event)" (onCancel)="cerrarModalContacto()"></app-contacto-form>
+      </div>
+    </div>
+  </div>
+}
+
+@if (modalListaContactosAbierto()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" (click)="cerrarModalListaContactos()">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">Contactos Asociados</h3>
+          <p class="text-xs text-slate-500">Empresa: {{ clienteVisualizado }}</p>
+        </div>
+        <button (click)="cerrarModalListaContactos()" class="text-slate-400 hover:text-slate-600"><span class="material-icons">close</span></button>
+      </div>
+      <div class="p-6 max-h-[60vh] overflow-y-auto">
+        @if (contactosDelCliente().length === 0) {
+           <div class="text-center py-8 text-slate-400">
+             <span class="material-icons text-4xl mb-2">person_off</span>
+             <p>No hay contactos registrados.</p>
+           </div>
+        } @else {
+           <div class="grid grid-cols-1 gap-4">
+             @for (contacto of contactosDelCliente(); track contacto.id) {
+               <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <div class="flex items-center gap-4">
+                     <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                       {{ contacto.nombre.charAt(0) }}
+                     </div>
+                     <div>
+                       <h4 class="font-bold text-slate-800">{{ contacto.nombre }} {{ contacto.apellido }}</h4>
+                       <p class="text-xs text-slate-500">{{ contacto.cargo || 'Sin cargo' }}</p>
+                     </div>
+                  </div>
+                  <div class="text-right text-sm text-slate-600">{{ contacto.email }}</div>
+               </div>
+             }
+           </div>
+        }
       </div>
     </div>
   </div>

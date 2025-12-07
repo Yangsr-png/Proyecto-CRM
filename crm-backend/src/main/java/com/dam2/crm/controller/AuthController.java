@@ -31,7 +31,7 @@ public class AuthController {
                 .nombre(request.getNombre())
                 .email(request.getEmail()) // Usamos email
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(Role.TECNICO)
                 .build();
         
         userRepository.save(user);

@@ -1,28 +1,191 @@
-<nav class="navbar navbar-dark bg-primary px-3">
-  <span class="navbar-brand mb-0 h1">Mi CRM Dashboard</span>
+<div class="max-w-6xl mx-auto pt-8 px-4">
   
-  <div class="ms-auto">
-    <button class="btn btn-light text-primary d-flex align-items-center gap-2" (click)="logout()">
-      <span class="material-icons">logout</span>
-      Cerrar Sesión
-    </button>
-  </div>
-</nav>
-
-<div class="container p-4">
-  <!-- Mensaje de Bienvenida -->
-  <div class="alert alert-info mb-4">
-    <h1 class="display-6">¡Bienvenido al Dashboard!</h1>
-    <p>Esta es tu zona privada. El <strong>AuthGuard</strong> ha funcionado correctamente.</p>
-    <hr>
-    <p class="mb-0">Desde aquí podrás gestionar tus clientes, reportes y más.</p>
+  <div class="flex gap-2 mb-6 pl-2">
+    @for (i of [0, 1, 2]; track i) {
+      <button (click)="cambiarSlide(i)" 
+              class="w-3 h-3 rounded-full transition-all duration-300 border border-slate-400"
+              [ngClass]="slideActiva() === i ? 'bg-slate-800 scale-125 border-slate-800' : 'bg-transparent hover:bg-slate-200'">
+      </button>
+    }
   </div>
 
-  <!-- AQUI INSERTAMOS LA TABLA -->
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <app-clientes-table></app-clientes-table>
-    </div>
+  <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-lg min-h-[600px] relative overflow-hidden border border-slate-100">
+    
+    @if (slideActiva() === 0) {
+      <div class="animate-fade-in h-full flex flex-col justify-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-12 tracking-tight">Seguimiento Objetivos</h2>
+        
+        <div class="space-y-10">
+          @for (obj of objetivos(); track obj.nombre) {
+            <div class="flex flex-col md:flex-row md:items-center gap-6">
+              <div class="flex items-center gap-5 w-60 shrink-0">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shadow-sm bg-slate-50 text-slate-700">
+                  {{ getIniciales(obj.nombre) }}
+                </div>
+                <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ obj.nombre }}</span>
+              </div>
+              <div class="flex-1 h-8 rounded-lg overflow-hidden relative" [ngClass]="obj.bgBarra">
+                <div class="h-full rounded-r-lg transition-all duration-1000 ease-out" 
+                     [ngClass]="obj.colorBarra" 
+                     [style.width]="getAnchoBarra(obj.puntuacion, obj.total)">
+                </div>
+              </div>
+              <div class="text-2xl font-bold text-slate-800 w-24 text-right">
+                {{ obj.puntuacion }}/{{ obj.total }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (slideActiva() === 1) {
+      <div class="animate-fade-in h-full flex flex-col">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900">Resultados Financieros</h2>
+            <p class="text-slate-500 mt-1">Resumen del primer semestre</p>
+          </div>
+          <div class="bg-green-50 px-4 py-2 rounded-xl border border-green-100">
+            <span class="block text-xs text-green-600 font-bold uppercase">Beneficio Neto</span>
+            <span class="text-2xl font-bold text-green-700">+45.2k €</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 h-full">
+          
+          <div class="lg:col-span-2 flex flex-col justify-end">
+             <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-6">Ingresos Mensuales</h3>
+             <div class="flex-1 flex items-end justify-between gap-2 border-b border-slate-200 pb-4 h-64">
+                @for (dato of finanzas(); track dato.mes) {
+                  <div class="flex flex-col items-center gap-2 group w-full">
+                    <span class="opacity-0 group-hover:opacity-100 font-bold text-slate-600 text-sm transition-opacity">{{ dato.valor }}k</span>
+                    <div class="w-full max-w-[50px] bg-[#1F3A47] rounded-t-lg hover:bg-[#10B981] transition-all duration-500 relative" 
+                         [style.height.px]="dato.valor * 3">
+                    </div>
+                    <span class="text-sm font-bold text-slate-400">{{ dato.mes }}</span>
+                  </div>
+                }
+             </div>
+          </div>
+
+          <div class="flex flex-col justify-center space-y-8 bg-slate-50 p-6 rounded-3xl">
+             <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Fuentes de Ingreso</h3>
+             
+             <div class="space-y-6">
+               @for (fuente of fuentesIngresos(); track fuente.nombre) {
+                 <div>
+                   <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                     <span>{{ fuente.nombre }}</span>
+                     <span>{{ fuente.porcentaje }}%</span>
+                   </div>
+                   <div class="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
+                     <div class="h-full rounded-full" [ngClass]="fuente.color" [style.width.%]="fuente.porcentaje"></div>
+                   </div>
+                 </div>
+               }
+             </div>
+
+             <div class="mt-4 pt-6 border-t border-slate-200">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                    <span class="material-icons text-sm">trending_up</span>
+                  </div>
+                  <div>
+                    <p class="text-xs text-slate-500 font-bold uppercase">Crecimiento Anual</p>
+                    <p class="text-xl font-bold text-slate-800">12.5%</p>
+                  </div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (slideActiva() === 2) {
+      <div class="animate-fade-in h-full flex flex-col">
+        <h2 class="text-3xl font-bold text-slate-900 mb-8">Estado Operativo</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div class="w-16 h-16 rounded-full border-[6px] border-[#10B981] flex items-center justify-center shrink-0">
+              <span class="text-sm font-bold text-slate-800">98%</span>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-800">SLA Cumplido</p>
+              <p class="text-xs text-slate-500">Tiempo respuesta</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div class="w-16 h-16 rounded-full border-[6px] border-[#F97316] flex items-center justify-center shrink-0">
+              <span class="text-sm font-bold text-slate-800">12</span>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-800">Urgencias</p>
+              <p class="text-xs text-slate-500">Pendientes hoy</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div class="w-16 h-16 rounded-full border-[6px] border-[#1F3A47] flex items-center justify-center shrink-0">
+              <span class="text-sm font-bold text-slate-800">15/22</span>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-800">Técnicos</p>
+              <p class="text-xs text-slate-500">Activos ahora</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-1">
+          
+          <div>
+            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">
+              Entrada de Incidencias (Tiempo Real)
+            </h3>
+            <div class="h-32 flex items-end justify-between gap-1 bg-slate-50 rounded-xl p-4 border border-slate-100 relative overflow-hidden">
+              
+              <div class="absolute top-1/2 left-0 w-full border-t border-dashed border-slate-300 pointer-events-none"></div>
+
+              @for (inc of incidentesPorHora(); track $index) {
+                <div class="w-full rounded-t-sm transition-all duration-300 hover:opacity-80 relative group" 
+                     [style.height.%]="(inc * 10) + 10" 
+                     [ngClass]="inc > 8 ? 'bg-red-400' : 'bg-blue-400'">
+                     <span class="opacity-0 group-hover:opacity-100 absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold bg-slate-800 text-white px-1 rounded">
+                       {{inc}}
+                     </span>
+                </div>
+              }
+            </div>
+            <div class="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+              <span>08:00 AM</span>
+              <span>Ahora</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Recursos Críticos</h3>
+            <div class="space-y-3">
+              @for (srv of serviciosStatus(); track srv.nombre) {
+                <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:shadow-sm transition bg-white cursor-default">
+                  <div class="flex items-center gap-3">
+                    <span class="material-icons text-slate-400 text-sm">{{ srv.icon }}</span>
+                    <span class="font-bold text-slate-700 text-sm">{{ srv.nombre }}</span>
+                  </div>
+                  <span class="text-xs font-bold px-2 py-1 rounded bg-slate-50 border" 
+                        [ngClass]="[srv.color, 'border-' + srv.color.split('-')[1] + '-100']">
+                    {{ srv.estado }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    }
+
   </div>
-  
 </div>
