@@ -1,12 +1,16 @@
 export interface Incidencia {
-  id: number;
+  id?: number;
   asunto: string;
-  ubicacion: string; // Ej: "Oficinas Centrales"
+  ubicacion?: string; // Se rellenará automáticamente con la dirección del cliente
   prioridad: 'ALTA' | 'MEDIA' | 'BAJA';
   estado: 'PENDIENTE' | 'EN_CURSO' | 'RESUELTO';
-  tecnicoAsignado?: { // Opcional, puede no tener técnico aún
-    nombre: string;
-    avatar?: string; // URL de la foto
+  fecha?: string;
+  
+  // Relaciones
+  clienteId?: number; 
+  tecnicoAsignado?: {
+    id: number;
+    nombre: string; 
+    email?: string;
   };
-  fecha: string;
 }

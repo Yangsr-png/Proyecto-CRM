@@ -1,52 +1,82 @@
-import { Injectable } from '@angular/core';
-import { of, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { Incidencia } from '../models/incidencia.model';
 
 @Injectable({ providedIn: 'root' })
 export class IncidenciasService {
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/incidencias`;
 
-  // Datos de prueba para visualizar el diseño
+  // MOCKS
   private mockData: Incidencia[] = [
-    {
-      id: 1,
-      asunto: 'Fallo Aire Acondicionado',
-      ubicacion: 'Oficinas Centrales',
-      prioridad: 'ALTA',
-      estado: 'EN_CURSO',
-      fecha: '2023-10-25',
-      tecnicoAsignado: { nombre: 'Juan Pérez' }
+    { 
+      id: 101, 
+      asunto: 'Fallo Aire Acondicionado', 
+      ubicacion: 'Calle Innovación 7, Madrid', 
+      prioridad: 'ALTA', 
+      estado: 'EN_CURSO', 
+      fecha: '2023-10-25', 
+      clienteId: 101,
+      tecnicoAsignado: { id: 1, nombre: 'Juan Pérez', email: 'juan@test.com' } 
     },
-    {
-      id: 2,
-      asunto: 'Puerta Rota',
-      ubicacion: 'Almacén B',
-      prioridad: 'MEDIA',
-      estado: 'PENDIENTE',
+    { 
+      id: 102, 
+      asunto: 'Puerta Rota', 
+      ubicacion: 'Av. del Mar 22, Valencia', 
+      prioridad: 'MEDIA', 
+      estado: 'PENDIENTE', 
       fecha: '2023-10-26',
-      tecnicoAsignado: { nombre: 'María García' }
-    },
-    {
-      id: 3,
-      asunto: 'Fuga de Agua',
-      ubicacion: 'Planta 2',
-      prioridad: 'BAJA',
-      estado: 'RESUELTO',
-      fecha: '2023-10-20',
-      tecnicoAsignado: { nombre: 'Roberto López' }
-    },
-     {
-      id: 4,
-      asunto: 'Luces parpadeando',
-      ubicacion: 'Recepción',
-      prioridad: 'ALTA',
-      estado: 'PENDIENTE',
-      fecha: '2023-10-27' // Sin técnico
+      clienteId: 102, 
+      tecnicoAsignado: { id: 2, nombre: 'María García', email: 'maria@test.com' } 
     }
   ];
 
   findAll(): Observable<Incidencia[]> {
-    return of(this.mockData);
+    return this.http.get<Incidencia[]>(this.apiUrl).pipe(
+      map(datosReales => [...this.mockData, ...datosReales]),
+      catchError(() => of(this.mockData))
+    );
   }
 
-  // Aquí agregarías delete, create, etc.
+  create(incidencia: Incidencia): Observable<Incidencia> {
+    return this.http.post<Incidencia>(this.apiUrl, incidencia).pipe(
+      catchError(() => {
+        const nuevoId = Math.max(...this.mockData.map(i => i.id || 0)) + 1;
+        const nuevaMock = { ...incidencia, id: nuevoId };
+        this.mockData.push(nuevaMock);
+        return of(nuevaMock);
+      })
+    );
+  }
+
+  update(id: number, incidencia: Incidencia): Observable<Incidencia> {
+    return this.http.put<Incidencia>(`${this.apiUrl}/${id}`, incidencia).pipe(
+      catchError((error) => {
+        const index = this.mockData.findIndex(i => i.id === id);
+        if (index !== -1) {
+          this.mockData[index] = { ...incidencia, id };
+          return of(this.mockData[index]);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // ---MÉTODO ELIMINAR ---
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError((error) => {
+        // Si falla (o es mock), intentamos borrar del array local
+        const index = this.mockData.findIndex(i => i.id === id);
+        if (index !== -1) {
+          this.mockData.splice(index, 1); // Borrar del array
+          return of(void 0);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
 }

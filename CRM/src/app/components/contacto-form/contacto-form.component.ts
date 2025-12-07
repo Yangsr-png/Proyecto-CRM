@@ -15,7 +15,7 @@ export class ContactoFormComponent implements OnInit {
   private contactosService = inject(ContactosService);
 
   // INPUT: Necesitamos saber a qué cliente pertenece este contacto
-  @Input({ required: true }) clienteId!: number;
+  @Input({ required: true }) clienteId!: number ;
 
   // INPUT: (Opcional) Si pasamos un contacto, es para editarlo
   @Input() contactoParaEditar?: Contacto;

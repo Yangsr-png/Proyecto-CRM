@@ -1,90 +1,163 @@
 <div class="space-y-6">
 
-  <div class="flex justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
     <div>
       <h2 class="text-2xl font-bold text-slate-800">Gestión de Incidencias</h2>
       <p class="text-slate-500 text-sm mt-1">Supervisa y asigna tickets de soporte.</p>
     </div>
-    <button class="bg-[#1e293b] hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-300 transition-all flex items-center gap-2">
+    <button (click)="abrirModal()" class="bg-[#1e293b] hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 transition-all">
       <span class="material-icons text-sm">add</span> Nueva Incidencia
     </button>
   </div>
 
   <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-    <table class="w-full text-left border-collapse">
-      
-      <thead>
-        <tr class="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-semibold">
-          <th class="py-4 px-6">Asunto / ID</th>
-          <th class="py-4 px-6">Cliente & Ubicación</th>
-          <th class="py-4 px-6 text-center">Prioridad</th>
-          <th class="py-4 px-6">Técnico Asignado</th>
-          <th class="py-4 px-6 text-right">Estado</th>
-          <th class="py-4 px-6 text-center">Acciones</th>
-        </tr>
-      </thead>
-
-      <tbody class="divide-y divide-slate-50">
-        @for (item of incidencias(); track item.id) {
-          <tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer">
-            
-            <td class="py-4 px-6">
-              <div class="font-bold text-slate-800">{{ item.asunto }}</div>
-              <div class="text-xs text-slate-400">#INC-00{{ item.id }}</div>
-            </td>
-
-            <td class="py-4 px-6">
-              <div class="flex items-center gap-2 text-slate-600">
-                <span class="material-icons text-sm text-slate-400">location_on</span>
-                <span class="text-sm font-medium">{{ item.ubicacion }}</span>
-              </div>
-            </td>
-
-            <td class="py-4 px-6 text-center">
-              <span class="px-3 py-1 rounded-full text-xs font-bold border" 
-                    [ngClass]="getPrioridadClass(item.prioridad)">
-                {{ item.prioridad }}
-              </span>
-            </td>
-
-            <td class="py-4 px-6">
-              @if (item.tecnicoAsignado) {
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white shadow-sm">
-                    {{ item.tecnicoAsignado.nombre.charAt(0) }}
-                  </div>
-                  <span class="text-sm font-medium text-slate-700">{{ item.tecnicoAsignado.nombre }}</span>
-                </div>
-              } @else {
-                <span class="text-xs text-slate-400 italic flex items-center gap-1">
-                  <span class="material-icons text-sm">person_add</span> Sin asignar
-                </span>
-              }
-            </td>
-
-            <td class="py-4 px-6 text-right">
-              <span class="inline-block px-3 py-1 rounded-lg text-xs font-bold shadow-sm"
-                    [ngClass]="getEstadoClass(item.estado)">
-                {{ item.estado.replace('_', ' ') }}
-              </span>
-            </td>
-
-            <td class="py-4 px-6 text-center">
-              <button class="text-slate-400 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50">
-                <span class="material-icons text-base">edit</span>
-              </button>
-            </td>
-
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+            <th class="py-4 px-6">Asunto</th>
+            <th class="py-4 px-6">Ubicación / Cliente</th>
+            <th class="py-4 px-6 text-center">Prioridad</th>
+            <th class="py-4 px-6">Técnico</th>
+            <th class="py-4 px-6 text-right">Estado</th>
+            <th class="py-4 px-6 text-center">Acciones</th>
           </tr>
-        }
-      </tbody>
-    </table>
-
-    @if (incidencias().length === 0) {
-      <div class="p-10 text-center text-slate-400">
-        <span class="material-icons text-5xl mb-2 text-slate-200">check_circle</span>
-        <p>No hay incidencias pendientes.</p>
-      </div>
-    }
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          @for (item of incidencias(); track item.id) {
+            <tr class="hover:bg-slate-50/80 transition-colors group">
+              <td class="py-4 px-6">
+                <div class="font-bold text-slate-800">{{ item.asunto }}</div>
+                <div class="text-xs text-slate-400">#INC-{{ item.id }}</div>
+              </td>
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-2 text-slate-600">
+                  <span class="material-icons text-sm text-slate-400">place</span>
+                  <span class="text-sm font-medium">{{ item.ubicacion }}</span>
+                </div>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <span class="px-3 py-1 rounded-full text-xs font-bold border" [ngClass]="getPrioridadClass(item.prioridad)">
+                  {{ item.prioridad }}
+                </span>
+              </td>
+              <td class="py-4 px-6">
+                @if (item.tecnicoAsignado) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white uppercase shadow-sm">
+                      {{ item.tecnicoAsignado.nombre?.charAt(0) || '?' }}
+                    </div>
+                    <span class="text-sm font-medium text-slate-700">
+                      {{ item.tecnicoAsignado.nombre }}
+                    </span>
+                  </div>
+                } @else {
+                  <span class="text-xs text-slate-400 italic flex items-center gap-1">
+                    <span class="material-icons text-sm">person_add</span> Sin asignar
+                  </span>
+                }
+              </td>
+              <td class="py-4 px-6 text-right">
+                <span class="inline-block px-3 py-1 rounded-lg text-xs font-bold shadow-sm" [ngClass]="getEstadoClass(item.estado)">
+                  {{ item.estado.replace('_', ' ') }}
+                </span>
+              </td>
+              <td class="py-4 px-6 text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button (click)="abrirModal(item)" class="text-slate-400 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50" title="Editar">
+                    <span class="material-icons text-base">edit</span>
+                  </button>
+                  
+                  <button (click)="borrarIncidencia(item)" class="text-slate-400 hover:text-red-600 transition p-2 rounded-full hover:bg-red-50" title="Eliminar">
+                    <span class="material-icons text-base">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
+
+  @if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" (click)="cerrarModal()">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden" (click)="$event.stopPropagation()">
+        
+        <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+          <h3 class="text-xl font-bold text-slate-800">
+            {{ esEdicion() ? 'Editar Incidencia' : 'Nueva Incidencia' }}
+          </h3>
+          <button (click)="cerrarModal()" class="text-slate-400 hover:text-red-500"><span class="material-icons">close</span></button>
+        </div>
+
+        <div class="p-6 space-y-4">
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Asunto</label>
+            <input [(ngModel)]="nuevaIncidencia.asunto" type="text" placeholder="Ej: Fallo eléctrico" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Cliente Asociado</label>
+            <select [(ngModel)]="nuevaIncidencia.clienteId" (ngModelChange)="onClienteChange()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500">
+              <option [ngValue]="null">-- Seleccionar Cliente --</option>
+              @for (cli of clientes(); track cli.id) {
+                <option [value]="cli.id">{{ cli.nombre }}</option>
+              }
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">
+              Ubicación 
+              <span class="text-xs font-normal text-slate-400 normal-case ml-1">(Automática del cliente)</span>
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <span class="material-icons text-lg">place</span>
+              </span>
+              <input [(ngModel)]="nuevaIncidencia.ubicacion" type="text" 
+                     class="w-full pl-10 bg-slate-100 border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500 text-slate-600">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Técnico Asignado</label>
+            <select [(ngModel)]="nuevaIncidencia.tecnicoAsignado" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500">
+              <option [ngValue]="null">-- Sin Asignar --</option>
+              @for (tec of tecnicos(); track tec.id) {
+                <option [ngValue]="tec">
+                   {{ tec.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Prioridad</label>
+              <select [(ngModel)]="nuevaIncidencia.prioridad" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none">
+                <option value="BAJA">Baja</option>
+                <option value="MEDIA">Media</option>
+                <option value="ALTA">Alta</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estado</label>
+              <select [(ngModel)]="nuevaIncidencia.estado" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_CURSO">En Curso</option>
+                <option value="RESUELTO">Resuelto</option>
+              </select>
+            </div>
+          </div>
+
+          <button (click)="guardar()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg mt-4">
+            {{ esEdicion() ? 'Guardar Cambios' : 'Crear Incidencia' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
