@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component'; // Importar
 import { ClientesTableComponent } from './components/clientes-table/clientes-table.component';
+import { ClienteForm } from './features/dashboard/pages/cliente-form/cliente-form';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
