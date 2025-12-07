@@ -1,5 +1,5 @@
 export interface Cliente {
-  id: number;        // Long en Java -> number en TS
+  id?: number;
   nombre: string;
   cif: string;
   direccion: string;
